@@ -12,7 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-
+using NuGet.Configuration;
 using NuGet.Frameworks;
 using NuGet.LibraryModel;
 using NuGet.Packaging.Core;
@@ -47,6 +47,8 @@ namespace Pharmacist.MsBuild.NuGet
             "Pharmacist.Common"
         };
 
+        private static PackageSource _packageSource;
+
         /// <summary>
         /// Gets or sets the project references.
         /// </summary>
@@ -79,6 +81,11 @@ namespace Pharmacist.MsBuild.NuGet
         [Required]
         public string OutputFile { get; set; }
 
+        /// <summary>
+        /// Gets or sets optional v3 nuget source.
+        /// </summary>
+        public string NugetSource { get; set; }
+
         /// <inheritdoc />
         public override bool Execute()
         {
@@ -99,6 +106,8 @@ namespace Pharmacist.MsBuild.NuGet
                 return false;
             }
 
+            _packageSource = NuGetPackageHelper.PackageSourceFabric(NugetSource);
+
             var packages = GetPackages();
 
             var lockPackages = ReadPackages(lockFile);
@@ -114,7 +123,7 @@ namespace Pharmacist.MsBuild.NuGet
 
                 try
                 {
-                    ObservablesForEventGenerator.ExtractEventsFromNuGetPackages(writer, packages, nugetFrameworks).GetAwaiter().GetResult();
+                    ObservablesForEventGenerator.ExtractEventsFromNuGetPackages(writer, packages, nugetFrameworks, nugetSource: _packageSource).GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
                 {
@@ -233,7 +242,7 @@ namespace Pharmacist.MsBuild.NuGet
                 }
 
                 var libraryRange = new LibraryRange(include, nuGetVersion, LibraryDependencyTarget.Package);
-                var packageIdentity = NuGetPackageHelper.GetBestMatch(libraryRange).GetAwaiter().GetResult();
+                var packageIdentity = NuGetPackageHelper.GetBestMatch(libraryRange, _packageSource).GetAwaiter().GetResult();
                 packages.Add(packageIdentity);
             }
 

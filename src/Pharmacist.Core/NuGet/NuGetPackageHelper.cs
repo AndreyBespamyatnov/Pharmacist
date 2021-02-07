@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using NuGet.Configuration;
+using NuGet.Credentials;
 using NuGet.Frameworks;
 using NuGet.LibraryModel;
 using NuGet.Packaging;
@@ -170,6 +171,30 @@ namespace Pharmacist.Core.NuGet
             var bestPackageVersion = versions?.FindBestMatch(identity.VersionRange, version => version);
 
             return new PackageIdentity(identity.Name, bestPackageVersion);
+        }
+
+        /// <summary>
+        /// Create new instance of <see cref="PackageSource"/> from nugetSource path.
+        /// </summary>
+        /// <param name="nugetSource">Optional v3 nuget source. Will default to default nuget.org servers.</param>
+        /// <returns>New <see cref="PackageSource"/> object.</returns>
+        public static PackageSource PackageSourceFabric(string nugetSource)
+        {
+            if (string.IsNullOrWhiteSpace(nugetSource))
+            {
+                return new PackageSource(DefaultNuGetSource);
+            }
+
+            var packageSource = new PackageSource(nugetSource);
+            var settings = Settings.LoadDefaultSettings($@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\NuGet", null, new XPlatMachineWideSetting());
+            var packageSourceProvider = new PackageSourceProvider(settings);
+            packageSourceProvider.SaveActivePackageSource(packageSource);
+
+            new PluginCredentialProvider(_logger, nugetSource, 5, "normal");
+
+            var test = "upz6r6a66jb2bavimixdmw7eq3xhc6ub353axzlgcgiujrvr2lra";
+
+            return packageSource;
         }
 
         /// <summary>

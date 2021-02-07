@@ -3,6 +3,7 @@
   <!-- The global detection vs local detection is inspired from the following https://github.com/dotnet/sdk/issues/1151#issuecomment-459275750 -->
   <PropertyGroup>
     <PharmacistGlobalPackages Condition="'$(PharmacistGlobalPackages)' == ''">false</PharmacistGlobalPackages>
+    <PharmacistNugetSource Condition="'$(PharmacistNugetSource)' == ''"></PharmacistNugetSource>
     <ProjectFileContent Condition="'$(PharmacistGlobalPackages)' == 'false'">$([System.IO.File]::ReadAllText($(MSBuildProjectFullPath)))</ProjectFileContent>
   </PropertyGroup>
 
@@ -50,6 +51,7 @@
                          TargetFrameworkVersion="$(TargetFrameworkVersion)"
                          ProjectTypeGuids="$(ProjectTypeGuids)"
                          TargetPlatformVersion="$(TargetPlatformVersion)"
+                         NugetSource="$(PharmacistNugetSource)"
                          OutputFile="$(PharmacistOutputFile)"/>
 
     <Message Text="Processed Pharmacist Packages" />

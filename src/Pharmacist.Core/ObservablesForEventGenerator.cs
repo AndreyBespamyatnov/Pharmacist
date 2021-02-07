@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-
+using NuGet.Configuration;
 using NuGet.Frameworks;
 using NuGet.LibraryModel;
 using NuGet.Packaging.Core;
@@ -130,11 +130,12 @@ namespace Pharmacist.Core
         /// <param name="packages">The packages to process.</param>
         /// <param name="frameworks">The framework to generate for in order of priority.</param>
         /// <param name="packageOutputFolder">Directory for the packages, if null a random path in the temp folder will be used.</param>
+        /// <param name="nugetSource">Optional v3 nuget source. Will default to default nuget.org servers.</param>
         /// <returns>A task to monitor the progress.</returns>
-        public static async Task ExtractEventsFromNuGetPackages(TextWriter writer, IReadOnlyCollection<PackageIdentity> packages, IReadOnlyCollection<NuGetFramework> frameworks, string? packageOutputFolder = null)
+        public static async Task ExtractEventsFromNuGetPackages(TextWriter writer, IReadOnlyCollection<PackageIdentity> packages, IReadOnlyCollection<NuGetFramework> frameworks, string? packageOutputFolder = null, PackageSource? nugetSource = null)
         {
             var extractor = new NuGetExtractor();
-            await extractor.Extract(frameworks, packages, packageOutputFolder).ConfigureAwait(false);
+            await extractor.Extract(frameworks, packages, packageOutputFolder, nugetSource).ConfigureAwait(false);
 
             if (extractor.Input == null)
             {
@@ -151,11 +152,12 @@ namespace Pharmacist.Core
         /// <param name="packages">The packages to process.</param>
         /// <param name="frameworks">The framework to generate for in order of priority.</param>
         /// <param name="packageOutputFolder">Directory for the packages, if null a random path in the temp folder will be used.</param>
+        /// <param name="nugetSource">Optional v3 nuget source. Will default to default nuget.org servers.</param>
         /// <returns>A task to monitor the progress.</returns>
-        public static async Task ExtractEventsFromNuGetPackages(TextWriter writer, IReadOnlyCollection<LibraryRange> packages, IReadOnlyCollection<NuGetFramework> frameworks, string? packageOutputFolder = null)
+        public static async Task ExtractEventsFromNuGetPackages(TextWriter writer, IReadOnlyCollection<LibraryRange> packages, IReadOnlyCollection<NuGetFramework> frameworks, string? packageOutputFolder = null, PackageSource? nugetSource = null)
         {
             var extractor = new NuGetExtractor();
-            await extractor.Extract(frameworks, packages, packageOutputFolder).ConfigureAwait(false);
+            await extractor.Extract(frameworks, packages, packageOutputFolder, nugetSource).ConfigureAwait(false);
 
             if (extractor.Input == null)
             {

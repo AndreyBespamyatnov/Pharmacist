@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using NuGet.Configuration;
 using NuGet.Frameworks;
 using NuGet.LibraryModel;
 using NuGet.Packaging.Core;
@@ -29,10 +29,11 @@ namespace Pharmacist.Core.Extractors
         /// <param name="targetFrameworks">The target framework to extract in order of priority.</param>
         /// <param name="packages">The packages to extract the information from.</param>
         /// <param name="packageOutputDirectory">Directory for the packages, if null a random path in the temp folder will be used.</param>
+        /// <param name="nugetSource">Optional v3 nuget source. Will default to default nuget.org servers.</param>
         /// <returns>A task to monitor the progress.</returns>
-        public async Task Extract(IReadOnlyCollection<NuGetFramework> targetFrameworks, IReadOnlyCollection<PackageIdentity> packages, string? packageOutputDirectory)
+        public async Task Extract(IReadOnlyCollection<NuGetFramework> targetFrameworks, IReadOnlyCollection<PackageIdentity> packages, string? packageOutputDirectory, PackageSource? nugetSource = null)
         {
-            Input = await NuGetPackageHelper.DownloadPackageFilesAndFolder(packages, targetFrameworks, packageOutputDirectory: packageOutputDirectory).ConfigureAwait(false);
+            Input = await NuGetPackageHelper.DownloadPackageFilesAndFolder(packages, targetFrameworks, packageOutputDirectory: packageOutputDirectory, nugetSource: nugetSource).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -41,10 +42,11 @@ namespace Pharmacist.Core.Extractors
         /// <param name="targetFrameworks">The target framework to extract in order of priority.</param>
         /// <param name="packages">The packages to extract the information from.</param>
         /// <param name="packageOutputDirectory">Directory for the packages, if null a random path in the temp folder will be used.</param>
+        /// <param name="nugetSource">Optional v3 nuget source. Will default to default nuget.org servers.</param>
         /// <returns>A task to monitor the progress.</returns>
-        public async Task Extract(IReadOnlyCollection<NuGetFramework> targetFrameworks, IReadOnlyCollection<LibraryRange> packages, string? packageOutputDirectory)
+        public async Task Extract(IReadOnlyCollection<NuGetFramework> targetFrameworks, IReadOnlyCollection<LibraryRange> packages, string? packageOutputDirectory, PackageSource? nugetSource = null)
         {
-            Input = await NuGetPackageHelper.DownloadPackageFilesAndFolder(packages, targetFrameworks, packageOutputDirectory: packageOutputDirectory).ConfigureAwait(false);
+            Input = await NuGetPackageHelper.DownloadPackageFilesAndFolder(packages, targetFrameworks, packageOutputDirectory: packageOutputDirectory, nugetSource: nugetSource).ConfigureAwait(false);
         }
     }
 }

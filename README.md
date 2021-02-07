@@ -77,6 +77,9 @@ For example if you had a inclusion for `Xamarin.Forms` in the same project that 
 
 Also it will only generate the specified `ProjectReference` and none of it's dependent packages. For example for a ProjectReference inclusion of `ReactiveUI`, it will not generate dependencies such as `System.Reactive`. If you want to generate observable wrappers for the dependent NuGet packages you must explicitly include them. 
 
+#### Using custom NuGet feed
+You can override Default NuGet feed by including `<PharmacistNugetSource>YOUR_CUSTOM_URL</PharmacistNugetSource>` in a `PropertyGroup` inside your project, it will use your default settings for that feed, such as authentication settings.
+
 ### Command Line
 
 Pharmacist comes with a command line version which is useful for generating for a specified platform.
